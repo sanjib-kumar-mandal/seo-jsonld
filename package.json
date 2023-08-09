@@ -24,13 +24,13 @@
     "url": "https://github.com/sanjib-kumar-mandal"
   },
   "license": "MIT",
-  "homepage": "https://github.com/sanjib-kumar-mandal/json-to-jsonld#readme",
+  "homepage": "https://github.com/sanjib-kumar-mandal/seo-jsonld#readme",
   "repository": {
     "type": "git",
-    "url": "git://github.com/sanjib-kumar-mandal/json-to-jsonld.git"
+    "url": "git://github.com/sanjib-kumar-mandal/seo-jsonld.git"
   },
   "bugs": {
-    "url": "https://github.com/sanjib-kumar-mandal/json-to-jsonld/issues"
+    "url": "https://github.com/sanjib-kumar-mandal/seo-jsonld/issues"
   },
   "devDependencies": {
     "typescript": "^5.1.6"
