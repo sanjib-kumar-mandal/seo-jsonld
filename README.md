@@ -1,4 +1,4 @@
-# JSON To JSONLD
+# SEO JSONLD
 Search engines works hard to understand the content of a page. We can help them by providing explicit clues about the meaning of a page by including structured data on the page. Structured data is a standardized format for providing information about a page and classifying the page content.
 ## Search Engine Support
 
@@ -29,7 +29,7 @@ Search engines works hard to understand the content of a page. We can help them 
 - [Video](https://developers.google.com/search/docs/appearance/structured-data/video)
 
 ## Install
-`npm i json-to-jsonld --save`
+`npm i seo-jsonld --save`
 
 ## Options for methods
 
@@ -106,7 +106,7 @@ Search engines works hard to understand the content of a page. We can help them 
 
 ## Example of usage
 ```
-  import { logo, LogoStructuredData, appendToHeadElement, UpdateDOMInterface } from 'json-to-jsonld';
+  import { logo, LogoStructuredData, appendToHeadElement, UpdateDOMInterface } from 'seo-jsonld';
 
   export class JsonLdConverter {
 
