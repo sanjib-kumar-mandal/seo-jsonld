@@ -16,23 +16,6 @@ export {
     Covid19StructuredData
 } from './interfaces/definitions';
 
-export {
-    artical, 
-    course, 
-    covid19, 
-    dataSet, 
-    educationalQA, 
-    event, 
-    factCheck,
-    faq, 
-    jobPosting, 
-    localBusiness, 
-    logo, 
-    movie, 
-    review, 
-    searchBox, 
-    softwareApplication, 
-    video
-} from './lib/converter';
+export { SeoJsonLd } from './lib/converter';
 
 export { appendToHeadElement } from './lib/add';

@@ -4,7 +4,7 @@
   "description": "Generate jsonLd for your webpage. Structure is provided for several types of jsonLd. Improve SEO from these favoured structures.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build"
@@ -12,9 +12,9 @@
   "keywords": [
     "seo-jsonld",
     "Json to JsonLd",
-    "JSONLD", 
-    "SEO", 
-    "Structured data markup", 
+    "JSONLD",
+    "SEO",
+    "Structured data markup",
     "Enriched search results"
   ],
   "author": {
@@ -32,6 +32,7 @@
     "url": "https://github.com/sanjib-kumar-mandal/seo-jsonld/issues"
   },
   "devDependencies": {
+    "@types/node": "^20.4.9",
     "typescript": "^5.1.6"
   }
 }
