@@ -106,24 +106,36 @@ Search engines works hard to understand the content of a page. We can help them 
 
 ## Example of usage
 ```
-  import { logo, LogoStructuredData, appendToHeadElement, UpdateDOMInterface } from 'seo-jsonld';
+  import { SeoJsonLd, appendToHeadElement } from 'seo-jsonld';
+  import { StructureDataType } from 'seo-jsonld/dist/types/types';
 
   export class JsonLdConverter {
 
-    constructor() {
-      const logoData = this.getVideoObject();
-      // If you want to append thorugh the plugin
-      this.attachToHead(logoData);
-    }
+    jsonLd = new SeoJsonLd();
 
-    private getVideoObject() {
-      const options: LogoStructuredData = {};
-      return logo(options);
-    }
-
-    private attachToHead(data: any) {
-      const domOptions: UpdateDOMInterface = { type: 'video', data, document };
-      appendToHeadElement(domOptions);
+    loadData(data: any, type: StructureDataType) {
+      const map = {
+        "artical": this.jsonLd.artical,
+        "course": this.jsonLd.course,
+        "covid-19": this.jsonLd.covid19,
+        "dataset": this.jsonLd.dataSet,
+        "educational-qa": this.jsonLd.educationalQA,
+        "event": this.jsonLd.event,
+        "fact-check": this.jsonLd.factCheck,
+        "faq": this.jsonLd.faq,
+        "job-posting": this.jsonLd.jobPosting,
+        "local-business": this.jsonLd.localBusiness,
+        "logo": this.jsonLd.logo,
+        "movie": this.jsonLd.movie,
+        "review": this.jsonLd.review,
+        "search-box": this.jsonLd.searchBox,
+        "software-application": this.jsonLd.softwareApplication,
+        "video": this.jsonLd.video
+      };
+      const result = map[type](data);
+      console.log(result);
+      // To attach to the document open below line
+      // appendToHeadElement({ data: result, document, type });
     }
 
   }
