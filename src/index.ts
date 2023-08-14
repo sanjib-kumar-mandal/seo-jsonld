@@ -8,6 +8,7 @@ export {
     ArticalStructuredData,
     CourseStructureData,
     JobPostingStructureData,
+    LearningVideoStructuredData,
     LocalBusinessStructuredData,
     LogoStructuredData,
     MovieStructuredData,

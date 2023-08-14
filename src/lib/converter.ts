@@ -9,6 +9,7 @@ import {
     FAQStructuredData,
     FactCheckStructuredData,
     JobPostingStructureData,
+    LearningVideoStructuredData,
     LocalBusinessStructuredData,
     LogoStructuredData,
     MovieStructuredData,
@@ -440,6 +441,44 @@ export class SeoJsonLd {
             })
         };
     }
+
+    /**
+     * Learning video structured data
+     * @param data - LearningVideoStructuredData
+     * @returns - Learning video structured data
+     * Read: https://developers.google.com/search/docs/appearance/structured-data/learning-video
+     * Usage: Any video page
+     */
+    learningVideo(data: LearningVideoStructuredData) {
+        return data ? {
+            "@context": "https://schema.org",
+            "@type": data.type ?? ["VideoObject", "LearningResource"],
+            ...(data.name && {"name": data.name}),
+            ...(data.description && {"description": data.description}),
+            ...(data.educationalLevel && {"educationalLevel": data.educationalLevel}),
+            ...(data.learningResourceType && {"learningResourceType": data.learningResourceType}),
+            ...(data.text && {"text": data.text}),
+            ...(data.contentUrl && {"contentUrl": data.contentUrl}),
+            ...(data.uploadDate && {"uploadDate": new Date(data.uploadDate ?? new Date()).toISOString()}),
+            ...(data.educationalAlignment && {"educationalAlignment": {
+              "@type": data.educationalAlignment.type ?? "AlignmentObject",
+              ...(data.educationalAlignment.educationalFramework && {"educationalFramework": data.educationalAlignment.educationalFramework}),
+              ...(data.educationalAlignment.targetName && {"targetName": data.educationalAlignment.targetName}),
+              ...(data.educationalAlignment.targetUrl && {"targetUrl": data.educationalAlignment.targetUrl})
+            }}),
+            ...(data.thumbnailUrls && {"thumbnailUrl": data.thumbnailUrls}),
+            "hasPart": data.hasPart?.map(el => {
+                return {
+                    "@type": el.type ?? ["Clip", "LearningResource"],
+                    ...(el.learningResourceType && {"learningResourceType": el.learningResourceType}),
+                    ...(el.name && {"name": el.name}),
+                    ...(el.startOffset && {"startOffset": el.startOffset}),
+                    ...(el.endOffset && {"endOffset": el.endOffset}),
+                    ...(el.url && {"url": el.url})
+                }
+            })
+        } : null;
+    }
     
     /**
      * Local business structured data
@@ -551,6 +590,21 @@ export class SeoJsonLd {
         } : null;
     }
     
+    /**
+     * Review snippet structured data
+     * @param data - ReviewStructuredData
+     * @returns - Review snippet structured data
+     * Read: https://developers.google.com/search/docs/appearance/structured-data/review-snippet
+     * Usage: 
+     * 1. Book Review
+     * 2. Course Review
+     * 3. Event Review
+     * 4. Local business Review
+     * 5. Movie Review
+     * 6. Product Review
+     * 7. Recipe Review
+     * 8. Software App Review
+     */
     review(data: ReviewStructuredData) {
         return data ? {
             "@context": "https://schema.org/",

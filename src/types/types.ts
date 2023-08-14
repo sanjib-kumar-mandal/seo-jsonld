@@ -1,4 +1,4 @@
-export type StructureDataType = 'video' | 'software-application' | 'dataset' | 'faq' | 'educational-qa' | 'event' | 'artical' | 'course' | 'job-posting' | 'local-business' | 'logo' | 'movie' | 'review' | 'covid-19';
+export type StructureDataType = 'video' | 'software-application' | 'dataset' | 'faq' | 'educational-qa' | 'event' | 'artical' | 'course' | 'job-posting' | 'local-business' | 'logo' | 'movie' | 'review' | 'covid-19' | 'bread-crump' | 'fact-check' | 'search-box' | 'learning-video';
 export type AddressType = 'PostalAddress' | string;
 export type Author = 'Person' | 'Organization' | string;
 export type Creator = 'Person' | 'Organization' | string;
@@ -9,3 +9,5 @@ export type WorkTimeUnit = 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
 export type WeekDays = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 export type ApplicationCategory = 'GameApplication' | 'SocialNetworkingApplication' | 'TravelApplication' | 'ShoppingApplication' | 'SportsApplication' | 'LifestyleApplication' | 'BusinessApplication' | 'DesignApplication' | 'DeveloperApplication' | 'DriverApplication' | 'EducationalApplication' | 'HealthApplication' | 'FinanceApplication' | 'SecurityApplication' | 'BrowserApplication' | 'CommunicationApplication' | 'DesktopEnhancementApplication' | 'EntertainmentApplication' | 'MultimediaApplication' | 'HomeApplication' | 'UtilitiesApplication' | 'ReferenceApplication' | string;
 export type Review = 'Restaurant' | 'Book' | 'Course' | 'Movie' | 'Product' | 'Recipe' | 'Software App' | 'CreativeWorkSeason' | 'CreativeWorkSeries' | 'Episode' | 'Game' | 'MediaObject' | 'MusicPlaylist' | 'MusicRecording' | 'Organization' | 'Local business' | 'How-to' | 'Event' | string;
+export type EducationLevelGeneric = 'Beginner' | 'Intermediate' | 'Advanced';
+export type LearningResourceType = 'Concept overview' | 'Problem walkthrough' | 'Real life application' | 'Activity' | 'Science experiment' | 'Lecture' | 'How-to' | 'Tips';

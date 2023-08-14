@@ -1,5 +1,5 @@
 import { LocationType } from "../enums/enums";
-import { ApplicationCategory, Education, Employment, Review, WeekDays, WorkTimeUnit } from "../types/types";
+import { ApplicationCategory, Education, Employment, LearningResourceType, Review, WeekDays, WorkTimeUnit } from "../types/types";
 import { AddressInterface, AuthorInterface, CreatorInterface, GeoInterface, PublisherInterface, ReviewInterface } from "./common";
 
 export interface ArticalStructuredData {
@@ -202,6 +202,32 @@ export interface JobPostingStructureData {
         credentialCategory: Education;
     }>;
     experienceRequirements?: number; // in months
+}
+
+export interface LearningVideoStructuredData {
+    type?: string | Array<string>;
+    name?: string;
+    description?: string;
+    educationalLevel?: string;
+    learningResourceType?: string;
+    text?: string;
+    contentUrl?: string;
+    uploadDate?: string | Date;
+    educationalAlignment?: {
+        type?: 'AlignmentObject';
+        educationalFramework?: string;
+        targetName?: string;
+        targetUrl?: string;
+    };
+    thumbnailUrls?: Array<string>;
+    hasPart?: Array<{
+        type?: string | Array<string>;
+        learningResourceType?: LearningResourceType;
+        name?: string;
+        startOffset?: number;
+        endOffset?: number;
+        url?: string;
+    }>;
 }
 
 export interface LocalBusinessStructuredData {
