@@ -34,17 +34,14 @@ Search engines works hard to understand the content of a page. We can help them 
 ## Options for methods
 
 - Artical
-
   - Method Name: `artical`
   - Input Format: `ArticalStructuredData`
 
-
 - Breadcrumb
-
   - Method Name: `breadCrump`
   - Input Format: `BreadcrumbStructureData | Array<BreadcrumbStructureData>`
 
-- Course list
+- Course List
   - Method Name: `course`
   - Input Format: `CourseStructureData`
 
@@ -72,9 +69,13 @@ Search engines works hard to understand the content of a page. We can help them 
   - Method Name: `faq`
   - Input Format: `FAQStructuredData`
 
-- Job posting
+- Job Posting
   - Method Name: `jobPosting`
   - Input Format: `JobPostingStructureData`
+
+- Learning Video
+  - Method Name: `learningVideo`
+  - Input Format: `LearningVideoStructuredData`
 
 - Local business
   - Method Name: `localBusiness`
@@ -92,7 +93,7 @@ Search engines works hard to understand the content of a page. We can help them 
   - Method Name: `review`
   - Input Format: `ReviewStructuredData`
 
-- Sitelinks search
+- Sitelinks Search
   - Method Name: `searchBox`
   - Input Format: `SearchBoxStructuredData`
 
@@ -111,9 +112,9 @@ Search engines works hard to understand the content of a page. We can help them 
 
   export class JsonLdConverter {
 
-    jsonLd = new SeoJsonLd();
+    private jsonLd = new SeoJsonLd();
 
-    loadData(data: any, type: StructureDataType) {
+    loadData(data: any, type: StructureDataType): void {
       const map = {
         "artical": this.jsonLd.artical,
         "course": this.jsonLd.course,
@@ -124,6 +125,7 @@ Search engines works hard to understand the content of a page. We can help them 
         "fact-check": this.jsonLd.factCheck,
         "faq": this.jsonLd.faq,
         "job-posting": this.jsonLd.jobPosting,
+        "learning-video": this.jsonLd.learningVideo,
         "local-business": this.jsonLd.localBusiness,
         "logo": this.jsonLd.logo,
         "movie": this.jsonLd.movie,
@@ -133,7 +135,6 @@ Search engines works hard to understand the content of a page. We can help them 
         "video": this.jsonLd.video
       };
       const result = map[type](data);
-      console.log(result);
       // To attach to the document open below line
       // appendToHeadElement({ data: result, document, type });
     }
