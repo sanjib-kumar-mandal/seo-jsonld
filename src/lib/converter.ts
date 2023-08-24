@@ -39,16 +39,19 @@ export class SeoJsonLd {
      * 2. NewsArticle
      * 3. BlogPosting
      */
-    artical(data: ArticalStructuredData) {
-        return {
-            "@context": "https://schema.org",
-            "@type": "NewsArticle",
-            ...(data.headline && { "headline": data.headline }),
-            ...(data.images?.length && { "image": data.images }),
-            ...(data.datePublished && { "datePublished": new Date(data.datePublished).toISOString() }),
-            ...(data.dateModified && { "dateModified": new Date(data.dateModified).toISOString() }),
-            ...(data.authors?.length && { "author": data.authors.map(el => createPersonObject(el)) })
-        };
+    artical(data: ArticalStructuredData | Array<ArticalStructuredData>) {
+        const create = (data: ArticalStructuredData) => {
+            return {
+                "@context": "https://schema.org",
+                "@type": "NewsArticle",
+                ...(data.headline && { "headline": data.headline }),
+                ...(data.images?.length && { "image": data.images }),
+                ...(data.datePublished && { "datePublished": new Date(data.datePublished).toISOString() }),
+                ...(data.dateModified && { "dateModified": new Date(data.dateModified).toISOString() }),
+                ...(data.authors?.length && { "author": data.authors.map(el => createPersonObject(el)) })
+            };
+        }
+        return data ? ((data instanceof Array) ? data.map(elm => create(elm)).filter(x => x !== null) : create(data)) : null;        
     }
     
     /**
@@ -76,7 +79,7 @@ export class SeoJsonLd {
                 })
             }
         }
-        return data ? ((data instanceof Array) ? data.map(elm => crump(elm)) : crump(data)) : null;
+        return data ? ((data instanceof Array) ? data.map(elm => crump(elm)).filter(x => x !== null) : crump(data)) : null;
     }
     
     /**
@@ -87,16 +90,19 @@ export class SeoJsonLd {
      * Usage Area:
      * 1. Course
      */
-    course(data: CourseStructureData) {
-        return data ? {
-            "@context": "https://schema.org",
-            "@type": data.type ?? 'Course',
-            ...(data.name && { "name": data.name }),
-            ...(data.description && { "description": data.description }),
-            ...(data.provider && {
-                "provider": createOrganisationObject(data.provider)
-            })
-        } : null;
+    course(data: CourseStructureData | Array<CourseStructureData>) {
+        const create = (data: CourseStructureData) => {
+            return data ? {
+                "@context": "https://schema.org",
+                "@type": data.type ?? 'Course',
+                ...(data.name && { "name": data.name }),
+                ...(data.description && { "description": data.description }),
+                ...(data.provider && {
+                    "provider": createOrganisationObject(data.provider)
+                })
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -115,25 +121,28 @@ export class SeoJsonLd {
      * 8. Announcement of revised hours and shopping restrictions
      * 9. Disease spread statistics and maps
      */
-    covid19(data: Covid19StructuredData) {
-        return data ? {
-            "@context": "https://schema.org",
-            "@type": data.type ?? 'SpecialAnnouncement',
-            ...(data.name && { "name": data.name }),
-            ...(data.description && { "text": data.description }),
-            ...(data.datePosted && { "datePosted": new Date(data.datePosted).toISOString() }),
-            ...(data.expires && { "expires": new Date(data.expires).toISOString() }),
-            ...(data.quarantineGuidelines && { "quarantineGuidelines": data.quarantineGuidelines }),
-            ...(data.diseasePreventionInfo && { "diseasePreventionInfo": data.diseasePreventionInfo }),
-            ...(data.spatialCoverage?.length && {
-                "spatialCoverage": data.spatialCoverage.map(el => {
-                    return {
-                        "@type": "AdministrativeArea",
-                        "name": el
-                    }
+    covid19(data: Covid19StructuredData | Array<Covid19StructuredData>) {
+        const create = (data: Covid19StructuredData) => {
+            return data ? {
+                "@context": "https://schema.org",
+                "@type": data.type ?? 'SpecialAnnouncement',
+                ...(data.name && { "name": data.name }),
+                ...(data.description && { "text": data.description }),
+                ...(data.datePosted && { "datePosted": new Date(data.datePosted).toISOString() }),
+                ...(data.expires && { "expires": new Date(data.expires).toISOString() }),
+                ...(data.quarantineGuidelines && { "quarantineGuidelines": data.quarantineGuidelines }),
+                ...(data.diseasePreventionInfo && { "diseasePreventionInfo": data.diseasePreventionInfo }),
+                ...(data.spatialCoverage?.length && {
+                    "spatialCoverage": data.spatialCoverage.map(el => {
+                        return {
+                            "@type": "AdministrativeArea",
+                            "name": el
+                        }
+                    })
                 })
-            })
-        } : null;
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -150,66 +159,69 @@ export class SeoJsonLd {
      * 6. Images capturing data
      * 7. Files relating to machine learning, such as trained parameters or neural network structure definitions
      */
-    dataSet(data: DatasetStructureData) {
-        return data ? {
-            "@context": "https://schema.org/",
-            "@type": data.type ?? 'Dataset',
-            ...(data.name && { "name": data.name }),
-            ...(data.alternateName && { "alternateName": data.alternateName }),
-            ...(data.description && { "description": data.description }),
-            ...(data.url && { "url": data.url }),
-            ...(data.sameAs && { "sameAs": data.sameAs }),
-            ...(data.identifier && { "identifier": data.identifier }),
-            ...(data.keywords?.length && { "keywords": data.keywords }),
-            ...(data.license && { "license": data.license }),
-            ...(data.version && { "version": data.version }),
-            ...(data.variableMeasured && { "variableMeasured": data.variableMeasured }),
-            ...(data.measurementTechnique && { "measurementTechnique": data.measurementTechnique }),
-            "isAccessibleForFree": data.hasOwnProperty('isAccessibleForFree') ? data.isAccessibleForFree : true,
-            ...(data.subDataset && {
-                "hasPart": data.subDataset.map(el => {
-                    return {
-                        "@type": el.type ?? 'Dataset',
-                        ...(el.name && { "name": el.name }),
-                        ...(el.description && { "description": el.description }),
-                        ...(el.license && { "license": el.license }),
-                        ...(el.creator && {
-                            "creator": createOrganisationObject(el.creator)
+    dataSet(data: DatasetStructureData | Array<DatasetStructureData>) {
+        const create = (data: DatasetStructureData) => {
+            return data ? {
+                "@context": "https://schema.org/",
+                "@type": data.type ?? 'Dataset',
+                ...(data.name && { "name": data.name }),
+                ...(data.alternateName && { "alternateName": data.alternateName }),
+                ...(data.description && { "description": data.description }),
+                ...(data.url && { "url": data.url }),
+                ...(data.sameAs && { "sameAs": data.sameAs }),
+                ...(data.identifier && { "identifier": data.identifier }),
+                ...(data.keywords?.length && { "keywords": data.keywords }),
+                ...(data.license && { "license": data.license }),
+                ...(data.version && { "version": data.version }),
+                ...(data.variableMeasured && { "variableMeasured": data.variableMeasured }),
+                ...(data.measurementTechnique && { "measurementTechnique": data.measurementTechnique }),
+                "isAccessibleForFree": data.hasOwnProperty('isAccessibleForFree') ? data.isAccessibleForFree : true,
+                ...(data.subDataset && {
+                    "hasPart": data.subDataset.map(el => {
+                        return {
+                            "@type": el.type ?? 'Dataset',
+                            ...(el.name && { "name": el.name }),
+                            ...(el.description && { "description": el.description }),
+                            ...(el.license && { "license": el.license }),
+                            ...(el.creator && {
+                                "creator": createOrganisationObject(el.creator)
+                            })
+                        }
+                    })
+                }),
+                ...(data.creator && {
+                    "creator": createOrganisationObject(data.creator)
+                }),
+                ...(data.founder && {
+                    "funder": createOrganisationObject(data.founder)
+                }),
+                ...(data.includedInDataCatalog && {
+                    "includedInDataCatalog": {
+                        "@type": data.includedInDataCatalog.type ?? 'DataCatalog',
+                        ...(data.includedInDataCatalog.name && { "name": data.includedInDataCatalog.name })
+                    }
+                }),
+                ...(data.distribution && {
+                    "distribution": data.distribution.map(el => {
+                        return {
+                            "@type": el.type ?? 'DataDownload',
+                            ...(el.encodingFormat && { "encodingFormat": el.encodingFormat }),
+                            ...(el.contentUrl && { "contentUrl": el.contentUrl })
+                        }
+                    })
+                }),
+                ...(data.temporalCoverage && { "temporalCoverage": new Date(data.temporalCoverage).toISOString() }),
+                ...(data.spatialCoverage && {
+                    "spatialCoverage": {
+                        "@type": data.spatialCoverage.type ?? 'Place',
+                        ...(data.spatialCoverage.geo && {
+                            "geo": createGeoObject(data.spatialCoverage.geo)
                         })
                     }
                 })
-            }),
-            ...(data.creator && {
-                "creator": createOrganisationObject(data.creator)
-            }),
-            ...(data.founder && {
-                "funder": createOrganisationObject(data.founder)
-            }),
-            ...(data.includedInDataCatalog && {
-                "includedInDataCatalog": {
-                    "@type": data.includedInDataCatalog.type ?? 'DataCatalog',
-                    ...(data.includedInDataCatalog.name && { "name": data.includedInDataCatalog.name })
-                }
-            }),
-            ...(data.distribution && {
-                "distribution": data.distribution.map(el => {
-                    return {
-                        "@type": el.type ?? 'DataDownload',
-                        ...(el.encodingFormat && { "encodingFormat": el.encodingFormat }),
-                        ...(el.contentUrl && { "contentUrl": el.contentUrl })
-                    }
-                })
-            }),
-            ...(data.temporalCoverage && { "temporalCoverage": new Date(data.temporalCoverage).toISOString() }),
-            ...(data.spatialCoverage && {
-                "spatialCoverage": {
-                    "@type": data.spatialCoverage.type ?? 'Place',
-                    ...(data.spatialCoverage.geo && {
-                        "geo": createGeoObject(data.spatialCoverage.geo)
-                    })
-                }
-            })
-        } : null;
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -220,42 +232,45 @@ export class SeoJsonLd {
      * Usage:
      * 1. Any question answer page
      */
-    educationalQA(data: EducationalQAStructuredData) {
-        return data ? {
-            "@context": "https://schema.org/",
-            "@type": data.type ?? 'Quiz',
-            ...(data.about && {
-                "about": {
-                    "@type": data.about.type ?? 'Thing',
-                    ...(data.about.name && { "name": data.about.name })
-                }
-            }),
-            ...(data.educationalAlignment && {
-                "educationalAlignment": data.educationalAlignment.map(el => {
-                    return {
-                        "@type": el.type ?? 'AlignmentObject',
-                        "alignmentType": el.alignmentType ?? 'educationalSubject',
-                        ...(el.targetName && { "targetName": el.targetName })
+    educationalQA(data: EducationalQAStructuredData | Array<EducationalQAStructuredData>) {
+        const create = (data: EducationalQAStructuredData) => {
+            return data ? {
+                "@context": "https://schema.org/",
+                "@type": data.type ?? 'Quiz',
+                ...(data.about && {
+                    "about": {
+                        "@type": data.about.type ?? 'Thing',
+                        ...(data.about.name && { "name": data.about.name })
                     }
+                }),
+                ...(data.educationalAlignment && {
+                    "educationalAlignment": data.educationalAlignment.map(el => {
+                        return {
+                            "@type": el.type ?? 'AlignmentObject',
+                            "alignmentType": el.alignmentType ?? 'educationalSubject',
+                            ...(el.targetName && { "targetName": el.targetName })
+                        }
+                    })
+                }),
+                ...(data.questionAnswer && {
+                    "hasPart": data.questionAnswer.map(el => {
+                        return {
+                            "@context": "https://schema.org/",
+                            "@type": el.type ?? "Question",
+                            "eduQuestionType": el.cardType ?? 'Flashcard',
+                            ...(el.question && { "text": el.question }),
+                            ...(el.answer && {
+                                "acceptedAnswer": {
+                                    "@type": el.answer.type ?? "Answer",
+                                    ...(el.answer.text && { "text": el.answer.text })
+                                }
+                            })
+                        }
+                    })
                 })
-            }),
-            ...(data.questionAnswer && {
-                "hasPart": data.questionAnswer.map(el => {
-                    return {
-                        "@context": "https://schema.org/",
-                        "@type": el.type ?? "Question",
-                        "eduQuestionType": el.cardType ?? 'Flashcard',
-                        ...(el.question && { "text": el.question }),
-                        ...(el.answer && {
-                            "acceptedAnswer": {
-                                "@type": el.answer.type ?? "Answer",
-                                ...(el.answer.text && { "text": el.answer.text })
-                            }
-                        })
-                    }
-                })
-            })
-        } : null;
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -266,38 +281,41 @@ export class SeoJsonLd {
      * Usage:
      * 1. To publish any Event for any location or online.
      */
-    event(eventInfo: EventStructuredData) {
-        return eventInfo ? {
-            "@context": "https://schema.org",
-            "@type": "Event",
-            ...(eventInfo.name && { "name": eventInfo.name }),
-            ...(eventInfo.startDate && { "startDate": eventInfo.startDate }),
-            ...(eventInfo.endDate && { "endDate": eventInfo.endDate }),
-            "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-            "eventStatus": "https://schema.org/EventScheduled",
-            ...(eventInfo?.location && { "location": createLocationObject(eventInfo.location) }),
-            ...(eventInfo.image?.length && { "image": eventInfo.image }),
-            ...(eventInfo.description && { "description": eventInfo.description }),
-            ...(eventInfo.offers && {
-                "offers": {
-                    "@type": "Offer",
-                    ...(eventInfo.offers.url && { "url": eventInfo.offers.url }),
-                    ...(eventInfo.offers.hasOwnProperty('price') && { "price": eventInfo.offers.price ?? 0 }),
-                    ...(eventInfo.offers.priceCurrency && { "priceCurrency": eventInfo.offers.priceCurrency }),
-                    "availability": "https://schema.org/InStock",
-                    ...(eventInfo.offers.validFrom && { "validFrom": eventInfo.offers.validFrom })
-                }
-            }),
-            ...(eventInfo.performer && {
-                "performer": {
-                    "@type": "PerformingGroup",
-                    "name": eventInfo.performer
-                }
-            }),
-            ...(eventInfo.organizer && {
-                "organizer": createOrganisationObject(eventInfo?.organizer)
-            })
-        } : null;
+    event(eventInfo: EventStructuredData | Array<EventStructuredData>) {
+        const create = (eventInfo: EventStructuredData) => {
+            return eventInfo ? {
+                "@context": "https://schema.org",
+                "@type": "Event",
+                ...(eventInfo.name && { "name": eventInfo.name }),
+                ...(eventInfo.startDate && { "startDate": eventInfo.startDate }),
+                ...(eventInfo.endDate && { "endDate": eventInfo.endDate }),
+                "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+                "eventStatus": "https://schema.org/EventScheduled",
+                ...(eventInfo?.location && { "location": createLocationObject(eventInfo.location) }),
+                ...(eventInfo.image?.length && { "image": eventInfo.image }),
+                ...(eventInfo.description && { "description": eventInfo.description }),
+                ...(eventInfo.offers && {
+                    "offers": {
+                        "@type": "Offer",
+                        ...(eventInfo.offers.url && { "url": eventInfo.offers.url }),
+                        ...(eventInfo.offers.hasOwnProperty('price') && { "price": eventInfo.offers.price ?? 0 }),
+                        ...(eventInfo.offers.priceCurrency && { "priceCurrency": eventInfo.offers.priceCurrency }),
+                        "availability": "https://schema.org/InStock",
+                        ...(eventInfo.offers.validFrom && { "validFrom": eventInfo.offers.validFrom })
+                    }
+                }),
+                ...(eventInfo.performer && {
+                    "performer": {
+                        "@type": "PerformingGroup",
+                        "name": eventInfo.performer
+                    }
+                }),
+                ...(eventInfo.organizer && {
+                    "organizer": createOrganisationObject(eventInfo?.organizer)
+                })
+            } : null;
+        };
+        return (eventInfo instanceof Array) ? eventInfo.map(el => create(el)).filter(x => x !== null) : create(eventInfo);
     }
     
     /**
@@ -310,33 +328,36 @@ export class SeoJsonLd {
      * 2. Claim
      * 3. Rating
      */
-    factCheck(data: FactCheckStructuredData) {
-        return data ? {
-            "@context": "https://schema.org",
-            "@type": data.type ?? "ClaimReview",
-            ...(data.url && { "url": data.url }),
-            ...(data.claimReviewed && { "claimReviewed": data.claimReviewed }),
-            ...(data.author && { "author": createAuthorObject(data.author) }),
-            ...(data.reviewRating && { "reviewRating": createRatingObject(data.reviewRating) }),
-            ...(data.itemReviewed && {
-                "itemReviewed": {
-                    "@type": data.itemReviewed.type ?? "Claim",
-                    ...(data.itemReviewed.author && { "author": createAuthorObject(data.itemReviewed.author) }),
-                    ...(data.itemReviewed.datePublished && { "datePublished": new Date(data.itemReviewed.datePublished).toISOString() }),
-                    ...(data.itemReviewed.appearance && {
-                        "appearance": {
-                            "@type": data.itemReviewed.appearance.type ?? "OpinionNewsArticle",
-                            ...(data.itemReviewed.appearance.url && { "url": data.itemReviewed.appearance.url }),
-                            ...(data.itemReviewed.appearance.headline && { "headline": data.itemReviewed.appearance.headline }),
-                            ...(data.itemReviewed.appearance.datePublished && { "datePublished": new Date(data.itemReviewed.appearance.datePublished).toISOString() }),
-                            ...(data.itemReviewed.appearance.author && { "author": createAuthorObject(data.itemReviewed.appearance.author) }),
-                            ...(data.itemReviewed.appearance.image && { "image": data.itemReviewed.appearance.image }),
-                            ...(data.itemReviewed.appearance.publisher && { "publisher": createOrganisationObject(data.itemReviewed.appearance.publisher) })
-                        }
-                    })
-                }
-            }),
-        } : null;
+    factCheck(data: FactCheckStructuredData | Array<FactCheckStructuredData>) {
+        const create = (data: FactCheckStructuredData) => {
+            return data ? {
+                "@context": "https://schema.org",
+                "@type": data.type ?? "ClaimReview",
+                ...(data.url && { "url": data.url }),
+                ...(data.claimReviewed && { "claimReviewed": data.claimReviewed }),
+                ...(data.author && { "author": createAuthorObject(data.author) }),
+                ...(data.reviewRating && { "reviewRating": createRatingObject(data.reviewRating) }),
+                ...(data.itemReviewed && {
+                    "itemReviewed": {
+                        "@type": data.itemReviewed.type ?? "Claim",
+                        ...(data.itemReviewed.author && { "author": createAuthorObject(data.itemReviewed.author) }),
+                        ...(data.itemReviewed.datePublished && { "datePublished": new Date(data.itemReviewed.datePublished).toISOString() }),
+                        ...(data.itemReviewed.appearance && {
+                            "appearance": {
+                                "@type": data.itemReviewed.appearance.type ?? "OpinionNewsArticle",
+                                ...(data.itemReviewed.appearance.url && { "url": data.itemReviewed.appearance.url }),
+                                ...(data.itemReviewed.appearance.headline && { "headline": data.itemReviewed.appearance.headline }),
+                                ...(data.itemReviewed.appearance.datePublished && { "datePublished": new Date(data.itemReviewed.appearance.datePublished).toISOString() }),
+                                ...(data.itemReviewed.appearance.author && { "author": createAuthorObject(data.itemReviewed.appearance.author) }),
+                                ...(data.itemReviewed.appearance.image && { "image": data.itemReviewed.appearance.image }),
+                                ...(data.itemReviewed.appearance.publisher && { "publisher": createOrganisationObject(data.itemReviewed.appearance.publisher) })
+                            }
+                        })
+                    }
+                }),
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -347,25 +368,28 @@ export class SeoJsonLd {
      * Usage:
      * 1. To show any info of a page
      */
-    faq(data: FAQStructuredData) {
-        return data ? {
-            "@context": "https://schema.org",
-            "@type": data.type ?? "FAQPage",
-            ...(data.mainEntity?.length && {
-                "mainEntity": data.mainEntity.map(el => {
-                    return {
-                        "@type": el.type ?? "Question",
-                        ...(el.name && { "name": el.name }),
-                        ...(el.acceptedAnswer && {
-                            "acceptedAnswer": {
-                                "@type": el.acceptedAnswer.type ?? "Answer",
-                                "text": el.acceptedAnswer.text
-                            }
-                        })
-                    }
+    faq(data: FAQStructuredData | Array<FAQStructuredData>) {
+        const create = (data: FAQStructuredData) => {
+            return data ? {
+                "@context": "https://schema.org",
+                "@type": data.type ?? "FAQPage",
+                ...(data.mainEntity?.length && {
+                    "mainEntity": data.mainEntity.map(el => {
+                        return {
+                            "@type": el.type ?? "Question",
+                            ...(el.name && { "name": el.name }),
+                            ...(el.acceptedAnswer && {
+                                "acceptedAnswer": {
+                                    "@type": el.acceptedAnswer.type ?? "Answer",
+                                    "text": el.acceptedAnswer.text
+                                }
+                            })
+                        }
+                    })
                 })
-            })
-        } : null;
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -376,70 +400,73 @@ export class SeoJsonLd {
      * Usage:
      * 1. JobPosting on careers page
      */
-    jobPosting(data: JobPostingStructureData) {
-        return {
-            "@context": "https://schema.org/",
-            "@type": data.type ?? 'JobPosting',
-            ...(data.title && { "title": data.title }),
-            ...(data.description && { "description": data.description }),
-            ...(data.datePosted && { "datePosted": data.datePosted }),
-            ...(data.validThrough && { "validThrough": new Date(data.validThrough).toISOString() }),
-            ...(data.employmentType && { "employmentType": data.employmentType }),
-            ...(data.jobLocationType && { "jobLocationType": data.jobLocationType }),
-            ...(data.hasOwnProperty('experienceRequirements') && {
-                "experienceRequirements": {
-                    "@type": "OccupationalExperienceRequirements",
-                    "monthsOfExperience": data.experienceRequirements ?? 0
-                }
-            }),
-            ...(data.hiringOrganization && {
-                "hiringOrganization": createOrganisationObject(data.hiringOrganization)
-            }),
-            ...(data.identifier && {
-                "identifier": {
-                    "@type": data.identifier.type ?? 'PropertyValue',
-                    ...(data.identifier.name && { "name": data.identifier.name }),
-                    ...(data.identifier.value && { "value": data.identifier.value })
-                }
-            }),
-            ...(data.jobLocation && {
-                "jobLocation": {
-                    "@type": data.jobLocation.type ?? 'Place',
-                    ...(data.jobLocation.address && {
-                        "address": createAddressObject(data.jobLocation.address)
-                    })
-                }
-            }),
-            ...(data.baseSalary && {
-                "baseSalary": {
-                    "@type": data.baseSalary.type ?? 'MonetaryAmount',
-                    ...(data.baseSalary.currency && { "currency": data.baseSalary.currency }),
-                    ...(data.baseSalary.value && {
-                        "value": {
-                            "@type": data.baseSalary.value.type ?? 'QuantitativeValue',
-                            ...(data.baseSalary.value.value && { "value": data.baseSalary.value.value }),
-                            ...(data.baseSalary.value.unit && { "unitText": data.baseSalary.value.unit })
+    jobPosting(data: JobPostingStructureData | Array<JobPostingStructureData>) {
+        const create = (data: JobPostingStructureData) => {
+            return {
+                "@context": "https://schema.org/",
+                "@type": data.type ?? 'JobPosting',
+                ...(data.title && { "title": data.title }),
+                ...(data.description && { "description": data.description }),
+                ...(data.datePosted && { "datePosted": data.datePosted }),
+                ...(data.validThrough && { "validThrough": new Date(data.validThrough).toISOString() }),
+                ...(data.employmentType && { "employmentType": data.employmentType }),
+                ...(data.jobLocationType && { "jobLocationType": data.jobLocationType }),
+                ...(data.hasOwnProperty('experienceRequirements') && {
+                    "experienceRequirements": {
+                        "@type": "OccupationalExperienceRequirements",
+                        "monthsOfExperience": data.experienceRequirements ?? 0
+                    }
+                }),
+                ...(data.hiringOrganization && {
+                    "hiringOrganization": createOrganisationObject(data.hiringOrganization)
+                }),
+                ...(data.identifier && {
+                    "identifier": {
+                        "@type": data.identifier.type ?? 'PropertyValue',
+                        ...(data.identifier.name && { "name": data.identifier.name }),
+                        ...(data.identifier.value && { "value": data.identifier.value })
+                    }
+                }),
+                ...(data.jobLocation && {
+                    "jobLocation": {
+                        "@type": data.jobLocation.type ?? 'Place',
+                        ...(data.jobLocation.address && {
+                            "address": createAddressObject(data.jobLocation.address)
+                        })
+                    }
+                }),
+                ...(data.baseSalary && {
+                    "baseSalary": {
+                        "@type": data.baseSalary.type ?? 'MonetaryAmount',
+                        ...(data.baseSalary.currency && { "currency": data.baseSalary.currency }),
+                        ...(data.baseSalary.value && {
+                            "value": {
+                                "@type": data.baseSalary.value.type ?? 'QuantitativeValue',
+                                ...(data.baseSalary.value.value && { "value": data.baseSalary.value.value }),
+                                ...(data.baseSalary.value.unit && { "unitText": data.baseSalary.value.unit })
+                            }
+                        })
+                    }
+                }),
+                ...(data.applicantLocationRequirements && {
+                    "applicantLocationRequirements": data.applicantLocationRequirements?.map(el => {
+                        return {
+                            "@type": el.type ?? "Country",
+                            ...(el.name && { "name": el.name })
                         }
                     })
-                }
-            }),
-            ...(data.applicantLocationRequirements && {
-                "applicantLocationRequirements": data.applicantLocationRequirements?.map(el => {
-                    return {
-                        "@type": el.type ?? "Country",
-                        ...(el.name && { "name": el.name })
-                    }
+                }),
+                ...(data.educationRequirements && {
+                    "educationRequirements": data.educationRequirements.map(el => {
+                        return {
+                            "@type": el.type ?? "EducationalOccupationalCredential",
+                            ...(el.credentialCategory && { "credentialCategory": el.credentialCategory })
+                        }
+                    })
                 })
-            }),
-            ...(data.educationRequirements && {
-                "educationRequirements": data.educationRequirements.map(el => {
-                    return {
-                        "@type": el.type ?? "EducationalOccupationalCredential",
-                        ...(el.credentialCategory && { "credentialCategory": el.credentialCategory })
-                    }
-                })
-            })
-        };
+            };
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
 
     /**
@@ -449,35 +476,38 @@ export class SeoJsonLd {
      * Read: https://developers.google.com/search/docs/appearance/structured-data/learning-video
      * Usage: Any video page
      */
-    learningVideo(data: LearningVideoStructuredData) {
-        return data ? {
-            "@context": "https://schema.org",
-            "@type": data.type ?? ["VideoObject", "LearningResource"],
-            ...(data.name && {"name": data.name}),
-            ...(data.description && {"description": data.description}),
-            ...(data.educationalLevel && {"educationalLevel": data.educationalLevel}),
-            ...(data.learningResourceType && {"learningResourceType": data.learningResourceType}),
-            ...(data.text && {"text": data.text}),
-            ...(data.contentUrl && {"contentUrl": data.contentUrl}),
-            ...(data.uploadDate && {"uploadDate": new Date(data.uploadDate ?? new Date()).toISOString()}),
-            ...(data.educationalAlignment && {"educationalAlignment": {
-              "@type": data.educationalAlignment.type ?? "AlignmentObject",
-              ...(data.educationalAlignment.educationalFramework && {"educationalFramework": data.educationalAlignment.educationalFramework}),
-              ...(data.educationalAlignment.targetName && {"targetName": data.educationalAlignment.targetName}),
-              ...(data.educationalAlignment.targetUrl && {"targetUrl": data.educationalAlignment.targetUrl})
-            }}),
-            ...(data.thumbnailUrls && {"thumbnailUrl": data.thumbnailUrls}),
-            "hasPart": data.hasPart?.map(el => {
-                return {
-                    "@type": el.type ?? ["Clip", "LearningResource"],
-                    ...(el.learningResourceType && {"learningResourceType": el.learningResourceType}),
-                    ...(el.name && {"name": el.name}),
-                    ...(el.startOffset && {"startOffset": el.startOffset}),
-                    ...(el.endOffset && {"endOffset": el.endOffset}),
-                    ...(el.url && {"url": el.url})
-                }
-            })
-        } : null;
+    learningVideo(data: LearningVideoStructuredData | Array<LearningVideoStructuredData>) {
+        const create = (data: LearningVideoStructuredData) => {
+            return data ? {
+                "@context": "https://schema.org",
+                "@type": data.type ?? ["VideoObject", "LearningResource"],
+                ...(data.name && {"name": data.name}),
+                ...(data.description && {"description": data.description}),
+                ...(data.educationalLevel && {"educationalLevel": data.educationalLevel}),
+                ...(data.learningResourceType && {"learningResourceType": data.learningResourceType}),
+                ...(data.text && {"text": data.text}),
+                ...(data.contentUrl && {"contentUrl": data.contentUrl}),
+                ...(data.uploadDate && {"uploadDate": new Date(data.uploadDate ?? new Date()).toISOString()}),
+                ...(data.educationalAlignment && {"educationalAlignment": {
+                  "@type": data.educationalAlignment.type ?? "AlignmentObject",
+                  ...(data.educationalAlignment.educationalFramework && {"educationalFramework": data.educationalAlignment.educationalFramework}),
+                  ...(data.educationalAlignment.targetName && {"targetName": data.educationalAlignment.targetName}),
+                  ...(data.educationalAlignment.targetUrl && {"targetUrl": data.educationalAlignment.targetUrl})
+                }}),
+                ...(data.thumbnailUrls && {"thumbnailUrl": data.thumbnailUrls}),
+                "hasPart": data.hasPart?.map(el => {
+                    return {
+                        "@type": el.type ?? ["Clip", "LearningResource"],
+                        ...(el.learningResourceType && {"learningResourceType": el.learningResourceType}),
+                        ...(el.name && {"name": el.name}),
+                        ...(el.startOffset && {"startOffset": el.startOffset}),
+                        ...(el.endOffset && {"endOffset": el.endOffset}),
+                        ...(el.url && {"url": el.url})
+                    }
+                })
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -487,42 +517,46 @@ export class SeoJsonLd {
      * Read: https://developers.google.com/search/docs/appearance/structured-data/local-business
      * Usage: LocalBusiness posting
      */
-    localBusiness(data: LocalBusinessStructuredData) {
-        return data ? {
-            "@context": "https://schema.org",
-            "@type": data.type ?? 'Restaurant',
-            ...(data.image && { "image": data.image }),
-            ...(data.name && { "name": data.name }),
-            ...(data.url && { "url": data.url }),
-            ...(data.telephone && { "telephone": data.telephone }),
-            ...(data.servesCuisine && { "servesCuisine": data.servesCuisine }),
-            ...(data.priceRange && { "priceRange": data.priceRange }),
-            ...(data.menu && { "menu": data.menu }),
-            "acceptsReservations": data.hasOwnProperty("acceptsReservations") ? data.acceptsReservations : false,
-            ...(data.address && {
-                "address": createAddressObject(data.address)
-            }),
-            ...(data.review && {
-                "review": {
-                    "@type": data.review.type ?? 'Rating',
-                    ...(data.review.rating && { "reviewRating": createRatingObject(data.review.rating) }),
-                    ...(data.review.author && { "author": createAuthorObject(data.review.author) })
-                }
-            }),
-            ...(data.geo && {
-                "geo": createGeoObject(data.geo)
-            }),
-            ...(data.openingHoursSpecification?.length && {
-                "openingHoursSpecification": data.openingHoursSpecification.map(el => {
-                    return {
-                        "@type": "OpeningHoursSpecification",
-                        ...(el.hasOwnProperty('dayOfWeek') && { "dayOfWeek": el.dayOfWeek }),
-                        ...(el.opens && { "opens": el.opens }),
-                        ...(el.closes && { "closes": el.closes })
+    localBusiness(data: LocalBusinessStructuredData | Array<LocalBusinessStructuredData>) {
+        const create = (data: LocalBusinessStructuredData) => {
+            return data ? {
+                "@context": "https://schema.org",
+                "@type": data.type ?? 'Restaurant',
+                ...(data.image && { "image": data.image }),
+                ...(data.name && { "name": data.name }),
+                ...(data.url && { "url": data.url }),
+                ...(data.telephone && { "telephone": data.telephone }),
+                ...(data.servesCuisine && { "servesCuisine": data.servesCuisine }),
+                ...(data.priceRange && { "priceRange": data.priceRange }),
+                ...(data.menu && { "menu": data.menu }),
+                "acceptsReservations": data.hasOwnProperty("acceptsReservations") ? data.acceptsReservations : false,
+                ...(data.address && {
+                    "address": createAddressObject(data.address)
+                }),
+                ...(data.review && {
+                    "review": {
+                        "@type": data.review.type ?? 'Rating',
+                        ...(data.review.rating && { "reviewRating": createRatingObject(data.review.rating) }),
+                        ...(data.review.author && { "author": createAuthorObject(data.review.author) })
                     }
+                }),
+                ...(data.geo && {
+                    "geo": createGeoObject(data.geo)
+                }),
+                ...(data.openingHoursSpecification?.length && {
+                    "openingHoursSpecification": data.openingHoursSpecification.map(el => {
+                        return {
+                            "@type": "OpeningHoursSpecification",
+                            ...(el.hasOwnProperty('dayOfWeek') && { "dayOfWeek": el.dayOfWeek }),
+                            ...(el.opens && { "opens": el.opens }),
+                            ...(el.closes && { "closes": el.closes })
+                        }
+                    })
                 })
-            })
-        } : null;
+            } : null;
+        }
+
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -532,13 +566,16 @@ export class SeoJsonLd {
      * Read: https://developers.google.com/search/docs/appearance/structured-data/logo
      * Defines Organization
      */
-    logo(data: LogoStructuredData) {
-        return data ? {
-            "@context": "https://schema.org",
-            "@type": data.type ?? 'Organization',
-            ...(data.url && { "url": data.url }),
-            ...(data.logo && { "logo": data.logo })
-        } : null;
+    logo(data: LogoStructuredData | Array<LogoStructuredData>) {
+        const create = (data: LogoStructuredData) => {
+            return data ? {
+                "@context": "https://schema.org",
+                "@type": data.type ?? 'Organization',
+                ...(data.url && { "url": data.url }),
+                ...(data.logo && { "logo": data.logo })
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -605,34 +642,37 @@ export class SeoJsonLd {
      * 7. Recipe Review
      * 8. Software App Review
      */
-    review(data: ReviewStructuredData) {
-        return data ? {
-            "@context": "https://schema.org/",
-            "@type": data.type ?? 'Restaurant',
-            ...(data.name && { "name": data.name }),
-            ...(data.itemReviewed && {
-                "itemReviewed": {
-                    "@type": data.type ?? 'Restaurant',
-                    ...(data.itemReviewed.image && { "image": data.itemReviewed.image }),
-                    ...(data.itemReviewed.name && { "name": data.itemReviewed.name }),
-                    ...(data.itemReviewed.servesCuisine && { "servesCuisine": data.itemReviewed.servesCuisine }),
-                    ...(data.itemReviewed.priceRange && { "priceRange": data.itemReviewed.priceRange }),
-                    ...(data.itemReviewed.telephone && { "telephone": data.itemReviewed.telephone }),
-                    ...(data.itemReviewed.address && {
-                        "address": createAddressObject(data.itemReviewed.address)
-                    })
-                }
-            }),
-            ...(data.reviewRating && {
-                "reviewRating": createRatingObject(data.reviewRating)
-            }),
-            ...(data.author && {
-                "author": createAuthorObject(data.author)
-            }),
-            ...(data.publisher && {
-                "publisher": createOrganisationObject(data.publisher)
-            })
-        } : null;
+    review(data: ReviewStructuredData | Array<ReviewStructuredData>) {
+        const create = (data: ReviewStructuredData) => {
+            return data ? {
+                "@context": "https://schema.org/",
+                "@type": data.type ?? 'Restaurant',
+                ...(data.name && { "name": data.name }),
+                ...(data.itemReviewed && {
+                    "itemReviewed": {
+                        "@type": data.type ?? 'Restaurant',
+                        ...(data.itemReviewed.image && { "image": data.itemReviewed.image }),
+                        ...(data.itemReviewed.name && { "name": data.itemReviewed.name }),
+                        ...(data.itemReviewed.servesCuisine && { "servesCuisine": data.itemReviewed.servesCuisine }),
+                        ...(data.itemReviewed.priceRange && { "priceRange": data.itemReviewed.priceRange }),
+                        ...(data.itemReviewed.telephone && { "telephone": data.itemReviewed.telephone }),
+                        ...(data.itemReviewed.address && {
+                            "address": createAddressObject(data.itemReviewed.address)
+                        })
+                    }
+                }),
+                ...(data.reviewRating && {
+                    "reviewRating": createRatingObject(data.reviewRating)
+                }),
+                ...(data.author && {
+                    "author": createAuthorObject(data.author)
+                }),
+                ...(data.publisher && {
+                    "publisher": createOrganisationObject(data.publisher)
+                })
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -673,18 +713,21 @@ export class SeoJsonLd {
      * Usage: 
      * 1. Provide when you have an app of cuurent wesite
      */
-    softwareApplication(data: SoftwareApplicationStructureData) {
-        return data ? {
-            "@context": "https://schema.org",
-            "@type": data.type ?? "SoftwareApplication",
-            ...(data.name && { "name": data.name }),
-            ...(data.operatingSystem && { "operatingSystem": data.operatingSystem }),
-            ...(data.category && { "applicationCategory": data.category }),
-            ...(data.applicationLink && { "url": data.applicationLink }),
-            ...(data.rating && {
-                "aggregateRating": createRatingObject(data.rating)
-            })
-        } : null;
+    softwareApplication(data: SoftwareApplicationStructureData | Array<SoftwareApplicationStructureData>) {
+        const create = (data: SoftwareApplicationStructureData) => {
+            return data ? {
+                "@context": "https://schema.org",
+                "@type": data.type ?? "SoftwareApplication",
+                ...(data.name && { "name": data.name }),
+                ...(data.operatingSystem && { "operatingSystem": data.operatingSystem }),
+                ...(data.category && { "applicationCategory": data.category }),
+                ...(data.applicationLink && { "url": data.applicationLink }),
+                ...(data.rating && {
+                    "aggregateRating": createRatingObject(data.rating)
+                })
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
     
     /**
@@ -698,48 +741,51 @@ export class SeoJsonLd {
      * 3. Faq Video clips page
      * 4. Update blog page
      */
-    video(data: VideoStructureData) {
-        return data ? {
-            "@context": "https://schema.org",
-            "@type": data.type ?? 'VideoObject',
-            ...(data.name && { "name": data.name }),
-            ...(data.description && { "description": data.description }),
-            ...(data.thumbnailUrl && { "thumbnailUrl": data.thumbnailUrl }),
-            ...(data.uploadDate && { "uploadDate": data.uploadDate }),
-            ...(data.duration && { "duration": data.duration }),
-            ...(data.contentUrl && { "contentUrl": data.contentUrl }),
-            ...(data.embedUrl && { "embedUrl": data.embedUrl }),
-            ...(data.regionsAllowed && { "regionsAllowed": data.regionsAllowed }),
-            ...(data.viewCount && {
-                "interactionStatistic": {
-                    "@type": "InteractionCounter",
-                    "interactionType": {
-                        "@type": "WatchAction"
-                    },
-                    ...(data.viewCount && { "userInteractionCount": data.viewCount })
-                }
-            }),
-            ...(data.publication && {
-                "publication": data.publication?.map(el => {
-                    return {
-                        "@type": el.type ?? "BroadcastEvent",
-                        ...(el.hasOwnProperty('isLiveBroadcast') && { "isLiveBroadcast": !!el.isLiveBroadcast }),
-                        ...(el.startDate && { "startDate": new Date(el.startDate).toISOString() }),
-                        ...(el.endDate && { "endDate": new Date(el.endDate).toISOString() })
+    video(data: VideoStructureData | Array<VideoStructureData>) {
+        const create = (data: VideoStructureData) => {
+            return data ? {
+                "@context": "https://schema.org",
+                "@type": data.type ?? 'VideoObject',
+                ...(data.name && { "name": data.name }),
+                ...(data.description && { "description": data.description }),
+                ...(data.thumbnailUrl && { "thumbnailUrl": data.thumbnailUrl }),
+                ...(data.uploadDate && { "uploadDate": data.uploadDate }),
+                ...(data.duration && { "duration": data.duration }),
+                ...(data.contentUrl && { "contentUrl": data.contentUrl }),
+                ...(data.embedUrl && { "embedUrl": data.embedUrl }),
+                ...(data.regionsAllowed && { "regionsAllowed": data.regionsAllowed }),
+                ...(data.viewCount && {
+                    "interactionStatistic": {
+                        "@type": "InteractionCounter",
+                        "interactionType": {
+                            "@type": "WatchAction"
+                        },
+                        ...(data.viewCount && { "userInteractionCount": data.viewCount })
                     }
+                }),
+                ...(data.publication && {
+                    "publication": data.publication?.map(el => {
+                        return {
+                            "@type": el.type ?? "BroadcastEvent",
+                            ...(el.hasOwnProperty('isLiveBroadcast') && { "isLiveBroadcast": !!el.isLiveBroadcast }),
+                            ...(el.startDate && { "startDate": new Date(el.startDate).toISOString() }),
+                            ...(el.endDate && { "endDate": new Date(el.endDate).toISOString() })
+                        }
+                    })
+                }),
+                ...(data.clips?.length && {
+                    "hasPart": data.clips.map(el => {
+                        return {
+                            "@type": el.type ?? "Clip",
+                            ...(el.name && { "name": el.name }),
+                            ...(el.startOffset && { "startOffset": el.startOffset }),
+                            ...(el.endOffset && { "endOffset": el.endOffset }),
+                            ...(el.url && { "url": el.url })
+                        }
+                    })
                 })
-            }),
-            ...(data.clips?.length && {
-                "hasPart": data.clips.map(el => {
-                    return {
-                        "@type": el.type ?? "Clip",
-                        ...(el.name && { "name": el.name }),
-                        ...(el.startOffset && { "startOffset": el.startOffset }),
-                        ...(el.endOffset && { "endOffset": el.endOffset }),
-                        ...(el.url && { "url": el.url })
-                    }
-                })
-            })
-        } : null;
+            } : null;
+        }
+        return (data instanceof Array) ? data.map(el => create(el)).filter(x => x !== null) : create(data);
     }
 }

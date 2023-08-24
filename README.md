@@ -35,7 +35,7 @@ Search engines works hard to understand the content of a page. We can help them 
 
 - Artical
   - Method Name: `artical`
-  - Input Format: `ArticalStructuredData`
+  - Input Format: `ArticalStructuredData | Array<ArticalStructuredData>`
 
 - Breadcrumb
   - Method Name: `breadCrump`
@@ -43,47 +43,47 @@ Search engines works hard to understand the content of a page. We can help them 
 
 - Course List
   - Method Name: `course`
-  - Input Format: `CourseStructureData`
+  - Input Format: `CourseStructureData | Array<CourseStructureData>`
 
 - COVID-19 announcement
   - Method Name: `covid19`
-  - Input Format: `Covid19StructuredData`
+  - Input Format: `Covid19StructuredData | Array<Covid19StructuredData>`
 
 - Dataset
   - Method Name: `dataSet`
-  - Input Format: `DatasetStructureData`
+  - Input Format: `DatasetStructureData | Array<DatasetStructureData>`
 
 - Education Q&A
   - Method Name: `educationalQA`
-  - Input Format: `EducationalQAStructuredData`
+  - Input Format: `EducationalQAStructuredData | Array<EducationalQAStructuredData>`
 
 - Event
   - Method Name: `event`
-  - Input Format: `EventStructuredData`
+  - Input Format: `EventStructuredData | Array<EventStructuredData>`
 
 - Fact Check
   - Method Name: `factCheck`
-  - Input Format: `FactCheckStructuredData`
+  - Input Format: `FactCheckStructuredData | Array<FactCheckStructuredData>`
 
 - FAQ
   - Method Name: `faq`
-  - Input Format: `FAQStructuredData`
+  - Input Format: `FAQStructuredData | Array<FAQStructuredData>`
 
 - Job Posting
   - Method Name: `jobPosting`
-  - Input Format: `JobPostingStructureData`
+  - Input Format: `JobPostingStructureData | Array<JobPostingStructureData>`
 
 - Learning Video
   - Method Name: `learningVideo`
-  - Input Format: `LearningVideoStructuredData`
+  - Input Format: `LearningVideoStructuredData | Array<LearningVideoStructuredData>`
 
 - Local business
   - Method Name: `localBusiness`
-  - Input Format: `LocalBusinessStructuredData`
+  - Input Format: `LocalBusinessStructuredData | Array<LocalBusinessStructuredData>`
 
 - Logo
   - Method Name: `logo`
-  - Input Format: `LogoStructuredData`
+  - Input Format: `LogoStructuredData | Array<LogoStructuredData>`
 
 - Movie
   - Method Name: `movie`
@@ -91,7 +91,7 @@ Search engines works hard to understand the content of a page. We can help them 
 
 - Review
   - Method Name: `review`
-  - Input Format: `ReviewStructuredData`
+  - Input Format: `ReviewStructuredData | Array<ReviewStructuredData>`
 
 - Sitelinks Search
   - Method Name: `searchBox`
@@ -99,11 +99,11 @@ Search engines works hard to understand the content of a page. We can help them 
 
 - Software App
   - Method Name: `softwareApplication`
-  - Input Format: `SoftwareApplicationStructureData`
+  - Input Format: `SoftwareApplicationStructureData | Array<SoftwareApplicationStructureData>`
 
 - Video
   - Method Name: `video`
-  - Input Format: `VideoStructureData`
+  - Input Format: `VideoStructureData | Array<VideoStructureData>`
 
 ## Example of usage
 ```
