@@ -82,3 +82,8 @@ export interface UpdateDOMInterface {
   document: Document;
   uniqueIdentifier?: string
 }
+
+export interface ClearJsonLdInterface {
+  id?: StructureDataType;
+  document: Document;
+}

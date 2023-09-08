@@ -19,4 +19,4 @@ export {
 
 export { SeoJsonLd } from './lib/converter';
 
-export { appendToHeadElement } from './lib/add';
+export { appendToHeadElement, clearJsonLd } from './lib/add';

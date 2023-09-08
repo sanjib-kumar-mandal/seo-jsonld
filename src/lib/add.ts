@@ -1,4 +1,4 @@
-import { UpdateDOMInterface } from "../interfaces/common";
+import { ClearJsonLdInterface, UpdateDOMInterface } from "../interfaces/common";
 
 const attachElement = (data: any, id: string, document: Document): void => {
     const element = document.createElement('script');
@@ -33,9 +33,15 @@ const updateElement = (id: string, data: any, document: Document): void => {
  * @param options - UpdateDOMInterface
  */
 export const appendToHeadElement = (options: UpdateDOMInterface): void => {
-    if (!options) throw new Error("Please provide options.");
-    if (!options.document) throw new Error("[document] is missing");
-    if (!options.type) throw new Error("[StructureDataType] not provided");
+    if (!options) {
+        throw new Error("Please provide options.");
+    }
+    if (!options.document) {
+        throw new Error("[document] is missing");
+    }
+    if (!options.type) {
+        throw new Error("[StructureDataType] not provided");
+    }
     const id = options.uniqueIdentifier ?? options.type;
     if (options.data) {
         const result = (options.data instanceof Array) ? options.data.map(el => JSON.stringify(el)) : JSON.stringify(options.data);
@@ -52,5 +58,36 @@ export const appendToHeadElement = (options: UpdateDOMInterface): void => {
     } else {
         deleteElement(id, options.document);
         throw new Error("Need a [json or object] to build a structure. Please use provided interfaces for creating json.");
+    }
+}
+
+export const clearJsonLd = (options: ClearJsonLdInterface) => {
+    try {
+        if (options) {
+            // Check for document
+            if (!options.document) {
+                throw new Error("[document] is missing");
+            }
+            const head = options.document.head;
+            const scripts = head.getElementsByTagName('script');
+            // If no type or unique identifier then we will remove everything from the dom
+            if (options.hasOwnProperty('id')) {
+                for (let i = 0, l = scripts.length; i < l; i++) {
+                    if (scripts[i].id === options.id && scripts[i]?.type === 'application/ld+json') {
+                        scripts[i].remove();
+                    }
+                }
+            } else {
+                for (let i = 0, l = scripts.length; i < l; i++) {
+                    if (scripts[i]?.type === 'application/ld+json') {
+                        scripts[i].remove();
+                    }
+                }
+            }
+        } else {
+            throw new Error("Please provide options.");
+        }
+    } catch (e) {
+        throw e;
     }
 }
